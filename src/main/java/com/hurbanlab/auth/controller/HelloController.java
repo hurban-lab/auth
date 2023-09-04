@@ -12,7 +12,7 @@ public class HelloController {
     @Value("${spring.application.name:there}")
     private String appName;
 
-    @RequestMapping("/hello")
+    @RequestMapping("/auth/hello")
     public ResponseEntity<String> hello() {
         return new ResponseEntity<>("Hello " + appName, HttpStatus.OK);
     }
