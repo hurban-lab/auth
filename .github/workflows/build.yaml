@@ -38,7 +38,7 @@ jobs:
         with:
           name: auth-artifact
           path: ./target/*.jar
-  deploy:
+  push:
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -86,3 +86,37 @@ jobs:
           tags: |
             us-east1-docker.pkg.dev/hurban-lab/store/auth:${{ steps.get-tag.outputs.short_ref }}
             us-east1-docker.pkg.dev/hurban-lab/store/auth:latest
+  deploy:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    name: Deploy and Restart service
+    runs-on: ubuntu-latest
+    needs: push
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name == 'push'
+    steps:
+      - id: authenticate-gcp
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACC }}
+      - id: get-credentials-develop
+        if: (github.ref == 'refs/heads/develop')
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.GCP_CLUSTER_DEVELOP }}
+          location: ${{ secrets.GCP_REGION_GLOBAL }}
+      - id: get-credentials-prod
+        if: (github.ref == 'refs/heads/main')
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.GCP_CLUSTER_MAIN }}
+          location: ${{ secrets.GCP_REGION_GLOBAL }}
+      - id: catalog-deploy-sandbox
+        if: (github.ref == 'refs/heads/develop')
+        name: Deploy Service to Sandbox
+        run: kubectl rollout restart deployment auth-deploy --namespace=${{ secrets.GCP_NAMESPACE_DEVELOP }}
+      - id: catalog-deploy-prod
+        if: (github.ref == 'refs/heads/main')
+        name: Deploy Service to Production
+        run: kubectl rollout restart deployment auth-deploy --namespace=${{ secrets.GCP_NAMESPACE_MAIN }}
