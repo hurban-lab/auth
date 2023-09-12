@@ -25,4 +25,10 @@ public class AuthControllerTest {
         assertTrue(this.restTemplate.getForObject("http://localhost:" + port + "/auth/hello",
                 String.class).contains("Hello " + appName));
     }
+
+    @Test
+    public void byeShouldReturnDefaultMessage() throws Exception {
+        assertTrue(this.restTemplate.getForObject("http://localhost:" + port + "/auth/bye",
+                String.class).contains("Bye " + appName));
+    }
 }

@@ -17,4 +17,8 @@ public class AuthController {
         return new ResponseEntity<>("Hello " + appName, HttpStatus.OK);
     }
 
+    @RequestMapping("/auth/bye")
+    public ResponseEntity<String> bye() {
+        return new ResponseEntity<>("Bye " + appName, HttpStatus.OK);
+    }
 }
