@@ -28,8 +28,13 @@ public class AuthController {
         return new ResponseEntity<>("Bye " + appName, HttpStatus.OK);
     }
 
-    @RequestMapping("/error")
+    @RequestMapping("/notfound")
     public ResponseEntity<String> error() throws ResourceNotFoundError {
-        throw new ResourceNotFoundError(DefaultErrorCodes.RESOURCE_NOT_FOUND_ERROR, "Error resource not found");
+        throw new ResourceNotFoundError(DefaultErrorCodes.RESOURCE_NOT_FOUND_ERROR);
+    }
+
+    @RequestMapping("/error")
+    public ResponseEntity<String> exception() {
+        throw new RuntimeException("Oops");
     }
 }

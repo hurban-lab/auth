@@ -21,7 +21,7 @@ public class ErrorHandlerController {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorDescription> handleException(HttpServletRequest request,
                                                             Exception exception) {
-        ErrorDescription error = ErrorDescription.buildError(DefaultErrorCodes.GENERIC_ERROR,
+        ErrorDescription error = ErrorDescription.buildError(DefaultErrorCodes.GENERIC_ERROR.getCode(),
                 moduleName, exception, request);
         log.error(exception.getMessage(), exception);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -30,7 +30,7 @@ public class ErrorHandlerController {
     @ExceptionHandler({ResourceNotFoundError.class})
     public ResponseEntity<ErrorDescription> handleException(HttpServletRequest request,
                                                             ResourceNotFoundError exception) {
-        ErrorDescription error = ErrorDescription.buildError(DefaultErrorCodes.RESOURCE_NOT_FOUND_ERROR,
+        ErrorDescription error = ErrorDescription.buildError(DefaultErrorCodes.RESOURCE_NOT_FOUND_ERROR.getCode(),
                 moduleName, exception, request);
         log.error(exception.getMessage(), exception);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
