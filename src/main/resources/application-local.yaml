@@ -3,3 +3,5 @@ server:
 grafana:
   otlp:
     enabled: false
+#logging:
+#  config: classpath:logback-local.xml
